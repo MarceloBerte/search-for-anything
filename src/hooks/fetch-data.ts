@@ -8,7 +8,18 @@ export function useFetch() {
   const router = useRouter();
 
   async function getData (query: string, page: string = '1') {
-    const request = await fetch(`https://newsapi.org/v2/top-headlines?q=${query}&pageSize=${state.pageItensAmount}&page=${page}&apiKey=046349d682da47b1abedeb9ae792445e`);
+    const url = 'https://newsapi.org/v2/top-headlines';
+    const queryParams = new URLSearchParams();
+    
+    queryParams.append('q', query);
+    queryParams.append('pageSize', state.pageItensAmount.toString());
+    queryParams.append('page', page);
+
+    const request = await fetch(`${url}?${queryParams}`, {
+      headers: {
+        authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`
+      }
+    });
     const response = await request.json();
     
     router.replace(`/?q=${query}&page=${page}`);
